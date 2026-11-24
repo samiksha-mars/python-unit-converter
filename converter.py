@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Convert values between common units of length, weight, temperature, and volume."""
 
+import argparse
+import sys
+
 # Linear units: factor to convert one unit into the category's base unit.
 LINEAR_UNITS = {
     "length": {  # base unit: metre
@@ -88,3 +91,34 @@ def list_units():
         lines.append(f"{category}: {', '.join(units)}")
     lines.append(f"temperature: {', '.join(TEMPERATURE_UNITS)}")
     return "\n".join(sorted(lines))
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(
+        description="Convert a value between units of length, weight, temperature, and volume."
+    )
+    parser.add_argument("value", type=float, nargs="?", help="the number to convert")
+    parser.add_argument("from_unit", nargs="?", help="unit to convert from, e.g. km")
+    parser.add_argument("to_unit", nargs="?", help="unit to convert to, e.g. mi")
+    parser.add_argument("--list", action="store_true", help="list supported units and exit")
+    args = parser.parse_args(argv)
+
+    if args.list:
+        print(list_units())
+        return 0
+
+    if args.value is None or args.from_unit is None or args.to_unit is None:
+        parser.error("value, from_unit and to_unit are required (or use --list)")
+
+    try:
+        result = convert(args.value, args.from_unit, args.to_unit)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 1
+
+    print(f"{args.value:g} {args.from_unit} = {result:.6g} {args.to_unit}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
