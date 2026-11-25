@@ -25,6 +25,12 @@ class ConvertTest(unittest.TestCase):
         self.assertAlmostEqual(convert(0, "k", "c"), -273.15)
         self.assertAlmostEqual(convert(32, "f", "k"), 273.15)
 
+    def test_below_absolute_zero_rejected(self):
+        for value, unit in ((-273.16, "c"), (-460, "f"), (-1, "k")):
+            with self.assertRaises(ValueError):
+                convert(value, unit, "c")
+        self.assertAlmostEqual(convert(-459.67, "f", "k"), 0.0)
+
     def test_same_unit(self):
         self.assertEqual(convert(5, "m", "m"), 5)
 

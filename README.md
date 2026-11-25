@@ -12,6 +12,7 @@ temperature, and volume. Uses only the Python standard library.
 - Case-insensitive unit names, negative values supported
 - `--list` shows every supported unit
 - Clear error when converting between incompatible categories (e.g. `kg` to `mi`)
+  or for temperatures below absolute zero
 
 ## Usage
 

@@ -40,6 +40,7 @@ LINEAR_UNITS = {
 }
 
 TEMPERATURE_UNITS = ("c", "f", "k")
+ABSOLUTE_ZERO = {"c": -273.15, "f": -459.67, "k": 0.0}
 
 
 def find_category(unit):
@@ -78,6 +79,8 @@ def convert(value, from_unit, to_unit):
         raise ValueError(f"Cannot convert {source} ({from_unit}) to {target} ({to_unit})")
 
     if source == "temperature":
+        if value < ABSOLUTE_ZERO[from_unit]:
+            raise ValueError(f"{value:g} {from_unit} is below absolute zero")
         return _from_celsius(_to_celsius(value, from_unit), to_unit)
 
     factors = LINEAR_UNITS[source]
